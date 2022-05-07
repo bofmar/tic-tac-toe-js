@@ -1,0 +1,59 @@
+/* * * * * *
+   Globals
+* * * * * * */
+
+:root{
+  --cell-size: 100px;
+  --cell-line-color: black;
+}
+
+*,*::before,*::after{
+  box-sizing: border-box;
+}
+
+body{
+  margin: 0;
+}
+
+/* * * * * *
+    Board
+* * * * * * */
+
+.board{
+  width: 100vw;
+  height:100vh;
+  display: grid;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+  grid-template-columns: repeat(3, auto);
+}
+
+.cell{
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border: 1px solid var(--cell-line-color);
+}
+/*<-------Remove extra borders------->*/
+.cell:first-child,
+.cell:nth-child(2),
+.cell:nth-child(3){
+  border-top: none;
+}
+
+.cell:nth-child(3n + 1){
+  border-left: none;
+}
+
+.cell:nth-child(3n + 3){
+  border-right: none;
+}
+
+.cell:last-child,
+.cell:nth-child(7),
+.cell:nth-child(8){
+  border-bottom: none;
+}
+
+/*<-------X and O------->*/
