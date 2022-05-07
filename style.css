@@ -9,6 +9,7 @@
   --x-color: black;
   --o-color: black;
   --o-inner-color: white;
+  --hint-color: grey;
 }
 
 *,*::before,*::after{
@@ -42,6 +43,7 @@ body{
   justify-content: center;
   align-items: center;
   position: relative;
+  cursor: pointer;
 }
 /*<-------Remove extra borders------->*/
 .cell:first-child,
@@ -65,39 +67,76 @@ body{
 }
 
 /*<-------X styling------->*/
+.cell.x,
+.cell.circle{
+  cursor: not-allowed;
+}
+
 .cell.x::before,
-.cell.x::after{
+.cell.x::after,
+.board.x .cell:hover:not(.x):not(.circle)::before,
+.board.x .cell:hover:not(.x):not(.circle)::after{
   content: "";
   position: absolute;
   width: calc(var(--mark-size) * 0.15);
   height: var(--mark-size);
+}
+
+.cell.x::before,
+.cell.x::after{
   background-color: var(--x-color);
 }
 
-.cell.x::before{
+.cell.x::before,
+.board.x .cell:hover:not(.x):not(.circle)::before{
   transform: rotate(45deg);
 }
 
-.cell.x::after{
+.cell.x::after,
+.board.x .cell:hover:not(.x):not(.circle)::after{
   transform: rotate(-45deg);
 }
 
 /*<-------o styling------->*/
 .cell.circle::before,
-.cell.circle::after{
+.cell.circle::after,
+.board.circle .cell:hover:not(.x):not(.circle)::before,
+.board.circle .cell:hover:not(.x):not(.circle)::after{
   content: "";
   position: absolute;
   border-radius: 50%;
 }
 
-.cell.circle::before{
+.cell.circle::before,
+.board.circle .cell:hover:not(.x):not(.circle)::before{
   width: var(--mark-size);
   height: var(--mark-size);
+}
+
+.cell.circle::before{
   background-color: var(--o-color);
 }
 
-.cell.circle::after{
+.cell.circle::after,
+.board.circle .cell:hover:not(.x):not(.circle)::after{
   width: calc(var(--mark-size) * 0.7);
   height: calc(var(--mark-size) * 0.7);
+}
+
+.cell.circle::after{
+  background-color: var(--o-inner-color);
+}
+
+/*<-------x and o hint styles------->*/
+.board.x .cell:hover:not(.x):not(.circle)::before,
+.board.x .cell:hover:not(.x):not(.circle)::after{
+  background-color: var(--hint-color);
+}
+
+.board.circle .cell:hover:not(.x):not(.circle)::before{
+  background-color: var(--hint-color);
+}
+
+.board.circle .cell:hover:not(.x):not(.circle)::after{
   background-color: var(--o-inner-color);
 }
