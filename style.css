@@ -4,7 +4,11 @@
 
 :root{
   --cell-size: 100px;
+  --mark-size: calc(var(--cell-size) * 0.9);
   --cell-line-color: black;
+  --x-color: black;
+  --o-color: black;
+  --o-inner-color: white;
 }
 
 *,*::before,*::after{
@@ -34,6 +38,10 @@ body{
   width: var(--cell-size);
   height: var(--cell-size);
   border: 1px solid var(--cell-line-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 /*<-------Remove extra borders------->*/
 .cell:first-child,
@@ -56,4 +64,40 @@ body{
   border-bottom: none;
 }
 
-/*<-------X and O------->*/
+/*<-------X styling------->*/
+.cell.x::before,
+.cell.x::after{
+  content: "";
+  position: absolute;
+  width: calc(var(--mark-size) * 0.15);
+  height: var(--mark-size);
+  background-color: var(--x-color);
+}
+
+.cell.x::before{
+  transform: rotate(45deg);
+}
+
+.cell.x::after{
+  transform: rotate(-45deg);
+}
+
+/*<-------o styling------->*/
+.cell.circle::before,
+.cell.circle::after{
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+}
+
+.cell.circle::before{
+  width: var(--mark-size);
+  height: var(--mark-size);
+  background-color: var(--o-color);
+}
+
+.cell.circle::after{
+  width: calc(var(--mark-size) * 0.7);
+  height: calc(var(--mark-size) * 0.7);
+  background-color: var(--o-inner-color);
+}
