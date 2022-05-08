@@ -28,6 +28,8 @@ const board = (()=>{
       cells[i].classList.remove("circle");
     }
     currentPlayer = "x";
+    htmlBoard.classList.remove("circle");
+    htmlBoard.classList.add("x");
   }
 
   function _commitMove(e){
@@ -39,7 +41,7 @@ const board = (()=>{
       e.target.classList.add("circle");
       boardArray[e.target.dataset.index] = "o";
     }
-    _changePlayer();
+    _gameOverCheck();
   }
 
   function _changePlayer(){
@@ -52,6 +54,58 @@ const board = (()=>{
       currentPlayer = "x";
       htmlBoard.classList.add("x");
       htmlBoard.classList.remove("circle");
+    }
+  }
+
+  function _gameOverCheck(){
+    if(_checkRows() || _checkColumns() || _checkDiagonals()){
+      console.log(`${currentPlayer} won!`);
+      _reset();
+    }
+    else{
+      _changePlayer();
+    }
+  }
+
+  function _checkRows(){
+    for(let i = 0; i < 3; i++){
+      let row = []
+      for(let j = i*3; j < i * 3 + 3; j++){
+        row.push(boardArray[j]);
+      }
+      if (row.every(field => field === 'x') || row.every(field => field === 'o')) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function _checkColumns(){
+    for (let i = 0; i < 3; i++) {
+        let column = []
+        for (let j = 0; j < 3; j++) {
+            column.push(boardArray[i + 3 * j]);
+        }
+
+        if (column.every(field => field == 'x') || column.every(field => field == 'o')) {
+            return true;
+        }
+    }
+    return false;
+  }
+
+  function _checkDiagonals(){
+    const diag1 = [boardArray[0],boardArray[4],boardArray[8]];
+    const diag2 = [boardArray[6],boardArray[4],boardArray[2]];
+
+    if(diag1.every(field => field === "x") || diag1.every(field => field === "o")){
+      return true;
+    }
+    else if(diag2.every(field => field === "x") || diag2.every(field => field === "o")){
+      return true;
+    }
+    else{
+      return false;
     }
   }
 
