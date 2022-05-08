@@ -173,11 +173,11 @@ const player = function(name,taunt = "", picture = null){
 }
 
 // TO DO
-// Make the back button return you to start screen.
 // Create game module.
 // Create event handler.
 // The modals will communicate with each other through the event handler only.
 // Move appropriate functions from board to game.
+// Add carousel to select opponent
 // Add ai players.
 // Easy will just pick the first available move.
 // Normal picks at random.
