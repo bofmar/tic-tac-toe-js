@@ -116,7 +116,14 @@ const board = (()=>{
     return boardArray;
   }
 
+  function modal(){
+    const modal = document.querySelector(".game-over");
+    modal.showModal();
+  }
+
   return {
-    getBoard
+    getBoard,
+    modal
   };
 })();
+

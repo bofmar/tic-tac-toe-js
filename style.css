@@ -10,6 +10,8 @@
   --o-color: black;
   --o-inner-color: white;
   --hint-color: grey;
+  --modal-button-color-main: #60A5FA;
+  --modal-button-color-hover: #BFDBFE;
 }
 
 *,*::before,*::after{
@@ -18,6 +20,12 @@
 
 body{
   margin: 0;
+}
+
+button{
+  all: initial;
+  text-align: center;
+  cursor: pointer;
 }
 
 /* * * * * *
@@ -139,4 +147,61 @@ body{
 
 .board.circle .cell:hover:not(.x):not(.circle)::after{
   background-color: var(--o-inner-color);
+}
+
+/* * * * * *
+    Game
+    Over
+    Modal
+* * * * * * */
+
+.game-over{
+  position: relative;
+  width: 400px;
+  height: 580px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  border: none;
+  border-radius: 25px;
+}
+
+.game-over h2{
+  font-size: 2rem;
+}
+
+.game-over .who-won{
+  font-size: 1.5rem;
+}
+
+.game-over img{
+  width: 180px;
+  height: 255px;
+}
+
+.game-over .taunt{
+  font-size: 1.2rem;
+}
+
+.game-over .button-wrapper{
+  display: flex;
+  gap: 10px;
+}
+
+.game-over button{
+  width: 100px;
+  height: 50px;
+  border-radius: 10px;
+  background-color: var(--modal-button-color-main);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.game-over button:hover{
+  background-color: var(--modal-button-color-hover);
+}
+
+.game-over::backdrop{
+  background-color: black;
+  opacity: 0.5;
 }
