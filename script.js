@@ -5,9 +5,13 @@ const board = (()=>{
   //DOM selectors
   const htmlBoard = document.querySelector(".board");
   const cells = document.querySelectorAll(".cell");
+  const modal = document.querySelector(".game-over");
+  const resetButton = document.getElementById("reset");
+  const whoWonMessage = modal.querySelector(".who-won");
 
   //Event Binders
   cells.forEach(cell => cell.addEventListener("click",_commitMove));
+  resetButton.addEventListener("click", _reset);
 
   //Methods
   function _display(){
@@ -30,6 +34,7 @@ const board = (()=>{
     currentPlayer = "x";
     htmlBoard.classList.remove("circle");
     htmlBoard.classList.add("x");
+    modal.close();
   }
 
   function _commitMove(e){
@@ -62,8 +67,9 @@ const board = (()=>{
 
   function _gameOverCheck(){
     if(_checkRows() || _checkColumns() || _checkDiagonals()){
+      whoWonMessage.innerText = `${currentPlayer} won!`;
       console.log(`${currentPlayer} won!`);
-      _reset();
+      modal.showModal();
     }
     else{
       _changePlayer();
@@ -116,14 +122,8 @@ const board = (()=>{
     return boardArray;
   }
 
-  function modal(){
-    const modal = document.querySelector(".game-over");
-    modal.showModal();
-  }
-
   return {
-    getBoard,
-    modal
+    getBoard
   };
 })();
 
