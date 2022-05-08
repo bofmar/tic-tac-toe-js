@@ -1,5 +1,5 @@
 const board = (()=>{
-  const boardArray = ["","","x","o","x","o","x","",""];
+  let boardArray = ["","","x","o","x","o","x","",""];
 
   //DOM selectors
   const htmlBoard = document.querySelector(".board");
@@ -17,5 +17,16 @@ const board = (()=>{
     });
   }
 
-  return {_display};
+  function reset(){
+    boardArray = ["","","","","","","","",""];
+    for(let i = 0; i < cells.length; i++){
+      cells[i].classList.remove("x");
+      cells[i].classList.remove("circle");
+    }
+  }
+
+  return {
+    _display,
+    reset
+  };
 })();
