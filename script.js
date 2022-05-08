@@ -119,3 +119,7 @@ const board = (()=>{
   }
 })();
 
+const player = function(name,taunt = "", picture){
+  return {name,taunt,picture};
+}
+
