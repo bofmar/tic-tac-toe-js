@@ -33,6 +33,9 @@ const board = (()=>{
   }
 
   function _commitMove(e){
+    if(boardArray[e.target.dataset.index] !== ""){
+      return
+    } // prevent players from playing on top of each other
     if(currentPlayer === "x"){
       e.target.classList.add("x");
       boardArray[e.target.dataset.index] = "x";
