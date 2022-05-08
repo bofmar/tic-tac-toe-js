@@ -1,6 +1,8 @@
 const board = (()=>{
   let boardArray = ["","","","","","","","",""];
   let currentPlayer = "x";
+  let xScore = 0;
+  let oScore = 0;
 
   //DOM selectors
   const htmlBoard = document.querySelector(".board");
@@ -8,6 +10,7 @@ const board = (()=>{
   const modal = document.querySelector(".game-over");
   const resetButton = document.getElementById("reset");
   const whoWonMessage = modal.querySelector(".who-won");
+  const score = htmlBoard.querySelector(".score");
 
   //Event Binders
   cells.forEach(cell => cell.addEventListener("click",_commitMove));
@@ -67,8 +70,8 @@ const board = (()=>{
 
   function _gameOverCheck(){
     if(_checkRows() || _checkColumns() || _checkDiagonals()){
-      whoWonMessage.innerText = `${currentPlayer} won!`;
-      console.log(`${currentPlayer} won!`);
+      whoWonMessage.innerText = `${currentPlayer === 'x' ? "Player 1" : "Player 2"} won!`;
+      _updateScore();
       modal.showModal();
     }
     else{
@@ -117,9 +120,35 @@ const board = (()=>{
       return false;
     }
   }
+
+  function _updateScore(){
+    if(currentPlayer === "x"){
+      xScore++;
+    }
+    else{
+      oScore++;
+    }
+
+    score.innerText = `${xScore} - ${oScore}`;
+  }
 })();
 
 const player = function(name,taunt = "", picture){
   return {name,taunt,picture};
 }
 
+// TO DO
+// Create the intended look for the game board. Add score on the top, the player's pictures with their names underneath will go on either side of the game board.
+// Create the start screen.
+// Make the back button return you to start screen.
+// Get player's names from the start screen.
+// Create game modal.
+// Create event handler.
+// The modals will communicate with each other through the event handler only.
+// Move appropriate functions from board to game.
+// Add ai players.
+// Easy will just pick the first available move.
+// Normal picks at random.
+// Hard uses min-max.
+// Each ai level will have three different representatives with their own name, image and taunts.
+// Add final touches: modify the look of the game, add a favicon, add a title.
