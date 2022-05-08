@@ -9,6 +9,7 @@ const board = (()=>{
   const cells = document.querySelectorAll(".cell");
   const modal = document.querySelector(".game-over");
   const resetButton = document.getElementById("reset");
+  const backButton = document.getElementById("back");
   const whoWonMessage = modal.querySelector(".who-won");
   const score = htmlBoard.querySelector(".score");
   const titleScreen = document.querySelector(".title-screen");
@@ -22,6 +23,7 @@ const board = (()=>{
   cells.forEach(cell => cell.addEventListener("click",_commitMove));
   resetButton.addEventListener("click", _reset);
   startButton.addEventListener("click", _startGame);
+  backButton.addEventListener("click", _returnToTitle);
 
   //Methods
   function _display(){
@@ -139,6 +141,12 @@ const board = (()=>{
     score.innerText = `${xScore} - ${oScore}`;
   }
 
+  function _resetScore(){
+    xScore = 0;
+    oScore = 0;
+    score.innerText = `${xScore} - ${oScore}`;
+  }
+
   function _startGame(){
     const name1 = p1Input.value || "Player 1";
     const name2 = p2Input.value || "Player 2";
@@ -151,6 +159,13 @@ const board = (()=>{
     titleScreen.classList.add("hidden");
     htmlBoard.classList.remove("hidden");
   }
+
+  function _returnToTitle(){
+    _reset();
+    _resetScore();
+    titleScreen.classList.remove("hidden");
+    htmlBoard.classList.add("hidden");
+  }
 })();
 
 const player = function(name,taunt = "", picture = null){
@@ -159,8 +174,7 @@ const player = function(name,taunt = "", picture = null){
 
 // TO DO
 // Make the back button return you to start screen.
-// Get player's names from the start screen.
-// Create game modal.
+// Create game module.
 // Create event handler.
 // The modals will communicate with each other through the event handler only.
 // Move appropriate functions from board to game.
