@@ -11,10 +11,15 @@ const board = (()=>{
   const resetButton = document.getElementById("reset");
   const whoWonMessage = modal.querySelector(".who-won");
   const score = htmlBoard.querySelector(".score");
+  const titleScreen = document.querySelector(".title-screen");
+  const startButton = document.getElementById("start");
+  const p1Input = document.getElementById("name1");
+  const p2Input = document.getElementById("name2");
 
   //Event Binders
   cells.forEach(cell => cell.addEventListener("click",_commitMove));
   resetButton.addEventListener("click", _reset);
+  startButton.addEventListener("click", _startGame);
 
   //Methods
   function _display(){
@@ -130,6 +135,11 @@ const board = (()=>{
     }
 
     score.innerText = `${xScore} - ${oScore}`;
+  }
+
+  function _startGame(){
+    titleScreen.classList.add("hidden");
+    htmlBoard.classList.remove("hidden");
   }
 })();
 
