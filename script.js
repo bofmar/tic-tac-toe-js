@@ -117,13 +117,5 @@ const board = (()=>{
       return false;
     }
   }
-
-  function getBoard(){
-    return boardArray;
-  }
-
-  return {
-    getBoard
-  };
 })();
 
