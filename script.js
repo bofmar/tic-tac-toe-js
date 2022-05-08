@@ -138,7 +138,6 @@ const player = function(name,taunt = "", picture){
 }
 
 // TO DO
-// Create the intended look for the game board. Add score on the top, the player's pictures with their names underneath will go on either side of the game board.
 // Create the start screen.
 // Make the back button return you to start screen.
 // Get player's names from the start screen.

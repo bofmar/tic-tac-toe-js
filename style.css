@@ -27,7 +27,76 @@ button{
   all: initial;
   text-align: center;
   cursor: pointer;
+  width: 100px;
+  height: 50px;
+  border-radius: 10px;
+  background-color: var(--modal-button-color-main);
+  font-family: Arial, Helvetica, sans-serif;
 }
+
+button:hover{
+  background-color: var(--modal-button-color-hover);
+}
+
+.hidden{
+  display: none !important;
+}
+
+/* * * * * *
+    Title
+* * * * * * */
+.title-screen{
+  width: 100vw;
+  height:100vh;
+  display: grid;
+  grid-template-rows: repeat(3, auto);
+  grid-template-columns: repeat(3, auto);
+  grid-template-areas: 
+    "title title title"
+    "player1 vs player2"
+    "player1 starting player2";
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  gap: 20px;
+}
+
+.title-screen > h1{
+  grid-area: title;
+}
+
+#title-player-1{
+  grid-area: player1;
+}
+
+#title-player-2{
+  grid-area: player2;
+}
+
+.title-player{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.title-player > input{
+  font-size: 20px;
+  padding: 10px 10px;
+}
+
+.vs{
+  grid-area: vs;
+  font-size: 8rem;
+  font-style: italic;
+}
+
+.title-screen > button{
+  grid-area: starting;
+  font-size: 2rem;
+  align-self: flex-start;
+}
+
 
 /* * * * * *
     Board
@@ -225,18 +294,6 @@ button{
 .game-over .button-wrapper{
   display: flex;
   gap: 10px;
-}
-
-.game-over button{
-  width: 100px;
-  height: 50px;
-  border-radius: 10px;
-  background-color: var(--modal-button-color-main);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.game-over button:hover{
-  background-color: var(--modal-button-color-hover);
 }
 
 .game-over::backdrop{
