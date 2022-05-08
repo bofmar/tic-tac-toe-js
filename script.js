@@ -15,6 +15,8 @@ const board = (()=>{
   const startButton = document.getElementById("start");
   const p1Input = document.getElementById("name1");
   const p2Input = document.getElementById("name2");
+  const displayName1 = document.getElementById("display-name1");
+  const displayName2 = document.getElementById("display-name2");
 
   //Event Binders
   cells.forEach(cell => cell.addEventListener("click",_commitMove));
@@ -138,17 +140,24 @@ const board = (()=>{
   }
 
   function _startGame(){
+    const name1 = p1Input.value || "Player 1";
+    const name2 = p2Input.value || "Player 2";
+    this.player1 = player(name1);
+    this.player2 = player(name2);
+
+    displayName1.innerText = this.player1.name;
+    displayName2.innerText = this.player2.name;
+
     titleScreen.classList.add("hidden");
     htmlBoard.classList.remove("hidden");
   }
 })();
 
-const player = function(name,taunt = "", picture){
+const player = function(name,taunt = "", picture = null){
   return {name,taunt,picture};
 }
 
 // TO DO
-// Create the start screen.
 // Make the back button return you to start screen.
 // Get player's names from the start screen.
 // Create game modal.
