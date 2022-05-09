@@ -102,13 +102,26 @@ const board = (()=>{
 
   function _gameOverCheck(){
     if(_checkRows() || _checkColumns() || _checkDiagonals()){
-      whoWonMessage.innerText = `${currentPlayer === 'x' ? "Player 1" : "Player 2"} won!`;
+      whoWonMessage.innerText = victoryMessage();
+      pubsub.publish("gameOver", currentPlayer);
+      modal.showModal();
+    }
+    else if(boardArray.some(element => element === "") === false){
+      currentPlayer = "draw";
+      whoWonMessage.innerText = victoryMessage();
       pubsub.publish("gameOver", currentPlayer);
       modal.showModal();
     }
     else{
       _changePlayer();
     }
+  }
+
+  function victoryMessage(){
+    if(currentPlayer === "x") return `${displayName1.innerText} won!`;
+    if(currentPlayer === "o") return `${displayName2.innerText} won!`;
+    // TO DO : FIX THE ABOVE TO BE LESS HACKY
+    else return "It's a draw";
   }
 
   function _checkRows(){
@@ -185,9 +198,10 @@ const score = (() => {
   let oScore = 0;
 
   const score = document.querySelector(".score");
-  pubsub.subscribe("gameOver", updateScore)
+  pubsub.subscribe("gameOver", updateScore);
 
   function updateScore(playerWon){
+    if(playerWon === "draw") return;
     if(playerWon === "x"){
       xScore++;
     }
