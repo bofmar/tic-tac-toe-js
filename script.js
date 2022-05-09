@@ -1,8 +1,32 @@
+const pubsub = {
+  events: {},
+  subscribe: function (eventName, fn) {
+    this.events[eventName] = this.events[eventName] || [];
+    this.events[eventName].push(fn);
+  },
+  unsubscribe: function(eventName, fn) {
+    if (this.events[eventName]) {
+      for (var i = 0; i < this.events[eventName].length; i++) {
+        if (this.events[eventName][i] === fn) {
+          this.events[eventName].splice(i, 1);
+          break;
+        }
+      };
+    }
+  },
+  publish: function (eventName, data) {
+    if (this.events[eventName]) {
+      this.events[eventName].forEach(function(fn) {
+        fn(data);
+      });
+    }
+  }
+};
+
 const board = (()=>{
   let boardArray = ["","","","","","","","",""];
   let currentPlayer = "x";
-  let xScore = 0;
-  let oScore = 0;
+
 
   //DOM selectors
   const htmlBoard = document.querySelector(".board");
@@ -11,7 +35,6 @@ const board = (()=>{
   const resetButton = document.getElementById("reset");
   const backButton = document.getElementById("back");
   const whoWonMessage = modal.querySelector(".who-won");
-  const score = htmlBoard.querySelector(".score");
   const titleScreen = document.querySelector(".title-screen");
   const startButton = document.getElementById("start");
   const p1Input = document.getElementById("name1");
@@ -80,7 +103,7 @@ const board = (()=>{
   function _gameOverCheck(){
     if(_checkRows() || _checkColumns() || _checkDiagonals()){
       whoWonMessage.innerText = `${currentPlayer === 'x' ? "Player 1" : "Player 2"} won!`;
-      _updateScore();
+      pubsub.publish("gameOver", currentPlayer);
       modal.showModal();
     }
     else{
@@ -130,17 +153,6 @@ const board = (()=>{
     }
   }
 
-  function _updateScore(){
-    if(currentPlayer === "x"){
-      xScore++;
-    }
-    else{
-      oScore++;
-    }
-
-    score.innerText = `${xScore} - ${oScore}`;
-  }
-
   function _resetScore(){
     xScore = 0;
     oScore = 0;
@@ -168,34 +180,27 @@ const board = (()=>{
   }
 })();
 
+const score = (() => {
+  let xScore = 0;
+  let oScore = 0;
+
+  const score = document.querySelector(".score");
+  pubsub.subscribe("gameOver", updateScore)
+
+  function updateScore(playerWon){
+    if(playerWon === "x"){
+      xScore++;
+    }
+    else{
+      oScore++;
+    }
+    score.innerText = `${xScore} - ${oScore}`;
+  }
+})();
+
 const player = function(name,taunt = "", picture = null){
   return {name,taunt,picture};
 }
-
-const pubsub = {
-  events: {},
-  subscribe: function (eventName, fn) {
-    this.events[eventName] = this.events[eventName] || [];
-    this.events[eventName].push(fn);
-  },
-  unsubscribe: function(eventName, fn) {
-    if (this.events[eventName]) {
-      for (var i = 0; i < this.events[eventName].length; i++) {
-        if (this.events[eventName][i] === fn) {
-          this.events[eventName].splice(i, 1);
-          break;
-        }
-      };
-    }
-  },
-  publish: function (eventName, data) {
-    if (this.events[eventName]) {
-      this.events[eventName].forEach(function(fn) {
-        fn(data);
-      });
-    }
-  }
-};
 
 // TO DO
 // Create game module.
