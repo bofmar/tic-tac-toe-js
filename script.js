@@ -232,20 +232,33 @@ const titleScreenModule = (()=>{
   function startGame(){
     const name1 = p1Input.value || "Player 1";
     const name2 = p2Input.value || "Player 2";
-    this.player1 = player(name1);
-    this.player2 = player(name2);
 
     displayName1.innerText = this.player1.name;
     displayName2.innerText = this.player2.name;
 
     titleScreen.classList.add("hidden");
-    pubsub.publish("gameStart", null);
+    pubsub.publish("gameStart", [name1,name2]);
   }
 
 })();
 
 const gameMaster = (()=> {
+  let player1 = {};
+  let player2 = {};
 
+  pubsub.subscribe("gameStart", createPlayers);
+
+  function createPlayers(args){
+    player1 = player(args[0]);
+    player2 = player(args[1]);
+
+    console.log(player1,player2);
+  }
+
+  return {
+    player1,
+    player2
+  }
 })();
 
 const player = function(name,taunt = "", picture = null){
@@ -254,7 +267,6 @@ const player = function(name,taunt = "", picture = null){
 
 // TO DO
 // Create game module.
-// Create event handler.
 // The modules will communicate with each other through the event handler only.
 // Move appropriate functions from board to game.
 // Add carousel to select opponent
