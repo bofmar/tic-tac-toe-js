@@ -166,12 +166,6 @@ const board = (()=>{
     }
   }
 
-  function _resetScore(){
-    xScore = 0;
-    oScore = 0;
-    score.innerText = `${xScore} - ${oScore}`;
-  }
-
   function _startGame(){
     const name1 = p1Input.value || "Player 1";
     const name2 = p2Input.value || "Player 2";
@@ -187,7 +181,7 @@ const board = (()=>{
 
   function _returnToTitle(){
     _reset();
-    _resetScore();
+    pubsub.publish("gameReset", null);
     titleScreen.classList.remove("hidden");
     htmlBoard.classList.add("hidden");
   }
@@ -198,7 +192,9 @@ const score = (() => {
   let oScore = 0;
 
   const score = document.querySelector(".score");
+
   pubsub.subscribe("gameOver", updateScore);
+  pubsub.subscribe("gameReset", resetScore);
 
   function updateScore(playerWon){
     if(playerWon === "draw") return;
@@ -208,6 +204,12 @@ const score = (() => {
     else{
       oScore++;
     }
+    score.innerText = `${xScore} - ${oScore}`;
+  }
+
+  function resetScore(){
+    xScore = 0;
+    oScore = 0;
     score.innerText = `${xScore} - ${oScore}`;
   }
 })();
