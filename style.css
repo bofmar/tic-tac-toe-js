@@ -38,6 +38,11 @@ button:hover{
   background-color: var(--modal-button-color-hover);
 }
 
+img{
+  width: 180px;
+  height: 255px;
+}
+
 .hidden{
   display: none !important;
 }
@@ -97,6 +102,42 @@ button:hover{
   align-self: flex-start;
 }
 
+/* * * * * *
+  Carousel
+* * * * * * */
+.carousel{
+  position: relative;
+}
+
+.carousel-nav{
+  width: 100%;
+  padding: 20px 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+}
+
+.carousel-item{
+  display: none;
+}
+
+.carousel-item-selected{
+  display: block;
+}
+
+.carousel-button{
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+
+.carousel-button-selected{
+  background: rgba(255, 255, 255, 0.5);
+}
 
 /* * * * * *
     Board
@@ -280,11 +321,6 @@ button:hover{
 
 .game-over .who-won{
   font-size: 1.5rem;
-}
-
-.game-over img{
-  width: 180px;
-  height: 255px;
 }
 
 .game-over .taunt{
