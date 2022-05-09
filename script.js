@@ -190,6 +190,7 @@ const gameOverModal = (()=>{
   const modal = document.querySelector(".game-over");
   const resetButton = document.getElementById("reset");
   const backButton = document.getElementById("back");
+  const imageDiv = document.querySelector(".image-modal");
   const whoWonMessage = modal.querySelector(".who-won");
 
   pubsub.subscribe("gameOver", displayVictoryScreen);
@@ -198,6 +199,7 @@ const gameOverModal = (()=>{
 
   function displayVictoryScreen(victor){
     whoWonMessage.innerText = victoryMessage(victor);
+    victorImage(victor);
     modal.showModal();
   }
 
@@ -205,6 +207,16 @@ const gameOverModal = (()=>{
     if(victor === "x") return `${gameMaster.player1.name} won!`;
     if(victor === "o") return `${gameMaster.player2.name} won!`;
     else return "It's a draw";
+  }
+
+  function victorImage(victor){
+    imageDiv.lastElementChild.remove();
+    if(victor === "x"){
+      imageDiv.appendChild(document.getElementById("p1-image").cloneNode());
+    }
+    else{
+      imageDiv.appendChild(gameMaster.player2.image.cloneNode());
+    }
   }
 
   function reset(){
@@ -301,6 +313,7 @@ const playersAreas = (()=>{
 })();
 
 // TO DO
+// Make correct image appear in modal
 // Add ai players.
 // Easy will just pick the first available move.
 // Normal picks at random.

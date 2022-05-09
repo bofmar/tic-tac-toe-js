@@ -13,7 +13,7 @@
   <div class="title-screen">
     <h1>TIC-TAC-TOE</h1>
     <div class="title-player" id="title-player1">
-      <img src="./images/human.png" alt="">
+      <img src="./images/human.png" alt="" id="p1-image">
       <div>
         <label for="name1"></label>
         <input type="text" id="name1" name="name1" placeholder="Player x">
@@ -65,7 +65,9 @@
     <div class="game-over-wrapper">
       <h2>Game Over</h2>
       <p class="who-won"></p>
-      <img src="https://source.unsplash.com/random/180x255" alt="">
+      <div class="image-modal">
+        <div></div>
+      </div>
       <p class="taunt"></p>
       <div class="button-wrapper">
         <button id="reset">Reset</button>
