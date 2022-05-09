@@ -31,10 +31,6 @@ const board = (()=>{
   //DOM selectors
   const htmlBoard = document.querySelector(".board");
   const cells = document.querySelectorAll(".cell");
-  const modal = document.querySelector(".game-over");
-  const resetButton = document.getElementById("reset");
-  const backButton = document.getElementById("back");
-  const whoWonMessage = modal.querySelector(".who-won");
   const titleScreen = document.querySelector(".title-screen");
   const startButton = document.getElementById("start");
   const p1Input = document.getElementById("name1");
@@ -43,10 +39,10 @@ const board = (()=>{
   const displayName2 = document.getElementById("display-name2");
 
   //Event Binders
+  pubsub.subscribe("newRound", resetBoard);
+  pubsub.subscribe("gameReset", resetGame);
   cells.forEach(cell => cell.addEventListener("click",_commitMove));
-  resetButton.addEventListener("click", _reset);
   startButton.addEventListener("click", _startGame);
-  backButton.addEventListener("click", _returnToTitle);
 
   //Methods
   function _display(){
@@ -60,7 +56,7 @@ const board = (()=>{
     });
   }
 
-  function _reset(){
+  function resetBoard(){
     boardArray = ["","","","","","","","",""];
     for(let i = 0; i < cells.length; i++){
       cells[i].classList.remove("x");
@@ -69,7 +65,12 @@ const board = (()=>{
     currentPlayer = "x";
     htmlBoard.classList.remove("circle");
     htmlBoard.classList.add("x");
-    modal.close();
+  }
+
+  function resetGame(){
+    resetBoard();
+    titleScreen.classList.remove("hidden");
+    htmlBoard.classList.add("hidden");
   }
 
   function _commitMove(e){
@@ -102,26 +103,15 @@ const board = (()=>{
 
   function _gameOverCheck(){
     if(_checkRows() || _checkColumns() || _checkDiagonals()){
-      whoWonMessage.innerText = victoryMessage();
       pubsub.publish("gameOver", currentPlayer);
-      modal.showModal();
     }
     else if(boardArray.some(element => element === "") === false){
       currentPlayer = "draw";
-      whoWonMessage.innerText = victoryMessage();
       pubsub.publish("gameOver", currentPlayer);
-      modal.showModal();
     }
     else{
       _changePlayer();
     }
-  }
-
-  function victoryMessage(){
-    if(currentPlayer === "x") return `${displayName1.innerText} won!`;
-    if(currentPlayer === "o") return `${displayName2.innerText} won!`;
-    // TO DO : FIX THE ABOVE TO BE LESS HACKY
-    else return "It's a draw";
   }
 
   function _checkRows(){
@@ -178,13 +168,6 @@ const board = (()=>{
     titleScreen.classList.add("hidden");
     htmlBoard.classList.remove("hidden");
   }
-
-  function _returnToTitle(){
-    _reset();
-    pubsub.publish("gameReset", null);
-    titleScreen.classList.remove("hidden");
-    htmlBoard.classList.add("hidden");
-  }
 })();
 
 const score = (() => {
@@ -214,6 +197,43 @@ const score = (() => {
   }
 })();
 
+const gameOverModal = (()=>{
+  const modal = document.querySelector(".game-over");
+  const resetButton = document.getElementById("reset");
+  const backButton = document.getElementById("back");
+  const whoWonMessage = modal.querySelector(".who-won");
+
+  pubsub.subscribe("gameOver", displayVictoryScreen);
+  resetButton.addEventListener("click", reset);
+  backButton.addEventListener("click", returnToTitle);
+
+  function displayVictoryScreen(victor){
+    whoWonMessage.innerText = victoryMessage(victor);
+    modal.showModal();
+  }
+
+  function victoryMessage(victor){
+    if(victor === "x") return `Player 1 won!`;
+    if(victor === "o") return `Player 2 won!`;
+    // TO DO : FIX THE ABOVE SO THAT THE PROPER NAME IS SHOWN
+    else return "It's a draw";
+  }
+
+  function reset(){
+    modal.close();
+    pubsub.publish("newRound", null);
+  }
+
+  function returnToTitle(){
+    modal.close();
+    pubsub.publish("gameReset", null);
+  }
+})();
+
+const gameMaster = (()=> {
+
+})();
+
 const player = function(name,taunt = "", picture = null){
   return {name,taunt,picture};
 }
@@ -221,7 +241,7 @@ const player = function(name,taunt = "", picture = null){
 // TO DO
 // Create game module.
 // Create event handler.
-// The modals will communicate with each other through the event handler only.
+// The modules will communicate with each other through the event handler only.
 // Move appropriate functions from board to game.
 // Add carousel to select opponent
 // Add ai players.
