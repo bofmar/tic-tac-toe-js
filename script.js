@@ -31,18 +31,12 @@ const board = (()=>{
   //DOM selectors
   const htmlBoard = document.querySelector(".board");
   const cells = document.querySelectorAll(".cell");
-  const titleScreen = document.querySelector(".title-screen");
-  const startButton = document.getElementById("start");
-  const p1Input = document.getElementById("name1");
-  const p2Input = document.getElementById("name2");
-  const displayName1 = document.getElementById("display-name1");
-  const displayName2 = document.getElementById("display-name2");
 
   //Event Binders
+  pubsub.subscribe("gameStart", revealBoard);
   pubsub.subscribe("newRound", resetBoard);
   pubsub.subscribe("gameReset", resetGame);
   cells.forEach(cell => cell.addEventListener("click",_commitMove));
-  startButton.addEventListener("click", _startGame);
 
   //Methods
   function _display(){
@@ -54,6 +48,10 @@ const board = (()=>{
         cells[index].classList.add("circle");
       }
     });
+  }
+
+  function revealBoard(){
+    htmlBoard.classList.remove("hidden");
   }
 
   function resetBoard(){
@@ -69,7 +67,6 @@ const board = (()=>{
 
   function resetGame(){
     resetBoard();
-    titleScreen.classList.remove("hidden");
     htmlBoard.classList.add("hidden");
   }
 
@@ -155,19 +152,6 @@ const board = (()=>{
       return false;
     }
   }
-
-  function _startGame(){
-    const name1 = p1Input.value || "Player 1";
-    const name2 = p2Input.value || "Player 2";
-    this.player1 = player(name1);
-    this.player2 = player(name2);
-
-    displayName1.innerText = this.player1.name;
-    displayName2.innerText = this.player2.name;
-
-    titleScreen.classList.add("hidden");
-    htmlBoard.classList.remove("hidden");
-  }
 })();
 
 const score = (() => {
@@ -228,6 +212,36 @@ const gameOverModal = (()=>{
     modal.close();
     pubsub.publish("gameReset", null);
   }
+})();
+
+const titleScreenModule = (()=>{
+  const titleScreen = document.querySelector(".title-screen");
+  const startButton = document.getElementById("start");
+  const p1Input = document.getElementById("name1");
+  const p2Input = document.getElementById("name2");
+  const displayName1 = document.getElementById("display-name1");
+  const displayName2 = document.getElementById("display-name2");
+
+  pubsub.subscribe("gameReset", revealScreen);
+  startButton.addEventListener("click", startGame);
+
+  function revealScreen(){
+    titleScreen.classList.remove("hidden");
+  }
+
+  function startGame(){
+    const name1 = p1Input.value || "Player 1";
+    const name2 = p2Input.value || "Player 2";
+    this.player1 = player(name1);
+    this.player2 = player(name2);
+
+    displayName1.innerText = this.player1.name;
+    displayName2.innerText = this.player2.name;
+
+    titleScreen.classList.add("hidden");
+    pubsub.publish("gameStart", null);
+  }
+
 })();
 
 const gameMaster = (()=> {
