@@ -85,10 +85,21 @@ img{
   align-items: center;
 }
 
-.title-player > input{
+.title-player input{
   font-size: 20px;
   padding: 10px 10px;
 }
+
+.description-level,
+.description-name{
+  width: 290px;
+  margin-top: -5px;
+  padding-top: 10px;
+  font-size: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
 
 .vs{
   grid-area: vs;
