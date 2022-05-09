@@ -46,17 +46,6 @@ const board = (()=>{
   cells.forEach(cell => cell.addEventListener("click",commitMove));
 
   //Methods
-  function _display(){
-    boardArray.map((item, index) => {
-      if(item === "x"){
-        cells[index].classList.add("x");
-      }
-      if(item === "o"){
-        cells[index].classList.add("circle");
-      }
-    });
-  }
-
   function revealBoard(){
     htmlBoard.classList.remove("hidden");
   }
