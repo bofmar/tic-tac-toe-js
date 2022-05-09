@@ -262,7 +262,6 @@ const playersAreas = (()=>{
 })();
 
 // TO DO
-// Move appropriate functions from board to game.
 // Add carousel to select opponent
 // Add ai players.
 // Easy will just pick the first available move.
