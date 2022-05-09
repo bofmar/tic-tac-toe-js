@@ -26,14 +26,23 @@ const pubsub = {
 const Player = function(){
 }
 
-Player.prototype.init = function(name){
+Player.prototype.init = function(name,image){
   this.name = name;
+  this.image = image;
+}
+
+const AI = function(){
+}
+
+AI.prototype.init = function(name,image,level){
+  this.name = name
+  this.image = image
+  this.level = level
 }
 
 const board = (()=>{
   let boardArray = ["","","","","","","","",""];
   let currentPlayer = "x";
-
 
   //DOM selectors
   const htmlBoard = document.querySelector(".board");
@@ -195,7 +204,6 @@ const gameOverModal = (()=>{
   function victoryMessage(victor){
     if(victor === "x") return `${gameMaster.player1.name} won!`;
     if(victor === "o") return `${gameMaster.player2.name} won!`;
-    // TO DO : FIX THE ABOVE SO THAT THE PROPER NAME IS SHOWN
     else return "It's a draw";
   }
 
@@ -215,7 +223,7 @@ const titleScreenModule = (()=>{
   const startButton = document.getElementById("start");
   const p1Input = document.getElementById("name1");
   const p2Input = document.getElementById("name2");
-
+  
   pubsub.subscribe("gameReset", revealScreen);
   startButton.addEventListener("click", startGame);
 
@@ -225,24 +233,46 @@ const titleScreenModule = (()=>{
 
   function startGame(){
     const name1 = p1Input.value || "Player 1";
-    const name2 = p2Input.value || "Player 2";
+    const p2Image = document.querySelector(".carousel-item-selected");
 
+    let p2 = {};
+    p2.image = p2Image.lastElementChild.cloneNode();
+
+    if(p2Image.dataset.human === "true"){
+      p2.name = p2Input.value || "Player 2";
+      p2.ai = false;
+    }
+    else{
+      p2.name = document.querySelector(".description-name").dataset.name;
+      p2.ai = p2Image.dataset.level;
+    }
     titleScreen.classList.add("hidden");
-    pubsub.publish("gameStart", [name1,name2]);
+    pubsub.publish("gameStart", [name1,p2]);
   }
 })();
 
-const gameMaster = (()=> {
+const gameMaster = ( function() {
   let player1 = new Player();
-  let player2 = new Player();
+  let player2 = {};
 
   pubsub.subscribe("gameStart", createPlayers);
 
   function createPlayers(args){
     player1.init(args[0]);
-    player2.init(args[1]);
+    
+    const {name,image,ai} = args[1];
+    
+    if(ai === false){
+      let newPlayer = new Player();
+      newPlayer.init(name,image);
+      Object.assign(player2,newPlayer);
+    }
+    else{
+      let newAI = new AI;
+      newAI.init(name,image,ai);
+      Object.assign(player2,newAI);
+    }
   }
-
   return {
     player1,
     player2
@@ -252,17 +282,25 @@ const gameMaster = (()=> {
 const playersAreas = (()=>{
   const displayName1 = document.getElementById("display-name1");
   const displayName2 = document.getElementById("display-name2");
+  const p2div = document.getElementById("player2");
+
 
   pubsub.subscribe("gameStart", display);
+  pubsub.subscribe("gameReset", remove);
 
   function display(){
+    p2div.insertBefore(gameMaster.player2.image, p2div.firstElementChild);
+
     displayName1.innerText = gameMaster.player1.name;
     displayName2.innerText = gameMaster.player2.name;
+  }
+
+  function remove(){
+    p2div.firstElementChild.remove();
   }
 })();
 
 // TO DO
-// Add carousel to select opponent
 // Add ai players.
 // Easy will just pick the first available move.
 // Normal picks at random.

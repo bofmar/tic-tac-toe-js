@@ -77,7 +77,7 @@ const carousel = (()=>{
         title.lastElementChild.remove();
         let newDiv = document.createElement("div");
         newDiv.innerHTML = `
-            <p class="description-name">${descriptions[index].name} ${descriptions[index].description}</p>
+            <p class="description-name" data-name="${descriptions[index].name}">${descriptions[index].name} ${descriptions[index].description}</p>
           `;
         title.appendChild(newDiv);
       }
