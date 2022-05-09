@@ -23,6 +23,13 @@ const pubsub = {
   }
 };
 
+const Player = function(){
+}
+
+Player.prototype.init = function(name){
+  this.name = name;
+}
+
 const board = (()=>{
   let boardArray = ["","","","","","","","",""];
   let currentPlayer = "x";
@@ -36,7 +43,7 @@ const board = (()=>{
   pubsub.subscribe("gameStart", revealBoard);
   pubsub.subscribe("newRound", resetBoard);
   pubsub.subscribe("gameReset", resetGame);
-  cells.forEach(cell => cell.addEventListener("click",_commitMove));
+  cells.forEach(cell => cell.addEventListener("click",commitMove));
 
   //Methods
   function _display(){
@@ -70,7 +77,7 @@ const board = (()=>{
     htmlBoard.classList.add("hidden");
   }
 
-  function _commitMove(e){
+  function commitMove(e){
     if(boardArray[e.target.dataset.index] !== ""){
       return
     } // prevent players from playing on top of each other
@@ -82,10 +89,10 @@ const board = (()=>{
       e.target.classList.add("circle");
       boardArray[e.target.dataset.index] = "o";
     }
-    _gameOverCheck();
+    gameOverCheck();
   }
 
-  function _changePlayer(){
+  function changePlayer(){
     if(currentPlayer === "x"){
       currentPlayer = "o";
       htmlBoard.classList.add("circle");
@@ -98,8 +105,8 @@ const board = (()=>{
     }
   }
 
-  function _gameOverCheck(){
-    if(_checkRows() || _checkColumns() || _checkDiagonals()){
+  function gameOverCheck(){
+    if(checkRows() || checkColumns() || checkDiagonals()){
       pubsub.publish("gameOver", currentPlayer);
     }
     else if(boardArray.some(element => element === "") === false){
@@ -107,11 +114,11 @@ const board = (()=>{
       pubsub.publish("gameOver", currentPlayer);
     }
     else{
-      _changePlayer();
+      changePlayer();
     }
   }
 
-  function _checkRows(){
+  function checkRows(){
     for(let i = 0; i < 3; i++){
       let row = []
       for(let j = i*3; j < i * 3 + 3; j++){
@@ -124,7 +131,7 @@ const board = (()=>{
     return false;
   }
 
-  function _checkColumns(){
+  function checkColumns(){
     for (let i = 0; i < 3; i++) {
         let column = []
         for (let j = 0; j < 3; j++) {
@@ -138,7 +145,7 @@ const board = (()=>{
     return false;
   }
 
-  function _checkDiagonals(){
+  function checkDiagonals(){
     const diag1 = [boardArray[0],boardArray[4],boardArray[8]];
     const diag2 = [boardArray[6],boardArray[4],boardArray[2]];
 
@@ -197,8 +204,8 @@ const gameOverModal = (()=>{
   }
 
   function victoryMessage(victor){
-    if(victor === "x") return `Player 1 won!`;
-    if(victor === "o") return `Player 2 won!`;
+    if(victor === "x") return `${gameMaster.player1.name} won!`;
+    if(victor === "o") return `${gameMaster.player2.name} won!`;
     // TO DO : FIX THE ABOVE SO THAT THE PROPER NAME IS SHOWN
     else return "It's a draw";
   }
@@ -219,8 +226,6 @@ const titleScreenModule = (()=>{
   const startButton = document.getElementById("start");
   const p1Input = document.getElementById("name1");
   const p2Input = document.getElementById("name2");
-  const displayName1 = document.getElementById("display-name1");
-  const displayName2 = document.getElementById("display-name2");
 
   pubsub.subscribe("gameReset", revealScreen);
   startButton.addEventListener("click", startGame);
@@ -233,26 +238,20 @@ const titleScreenModule = (()=>{
     const name1 = p1Input.value || "Player 1";
     const name2 = p2Input.value || "Player 2";
 
-    displayName1.innerText = this.player1.name;
-    displayName2.innerText = this.player2.name;
-
     titleScreen.classList.add("hidden");
     pubsub.publish("gameStart", [name1,name2]);
   }
-
 })();
 
 const gameMaster = (()=> {
-  let player1 = {};
-  let player2 = {};
+  let player1 = new Player();
+  let player2 = new Player();
 
   pubsub.subscribe("gameStart", createPlayers);
 
   function createPlayers(args){
-    player1 = player(args[0]);
-    player2 = player(args[1]);
-
-    console.log(player1,player2);
+    player1.init(args[0]);
+    player2.init(args[1]);
   }
 
   return {
@@ -261,13 +260,19 @@ const gameMaster = (()=> {
   }
 })();
 
-const player = function(name,taunt = "", picture = null){
-  return {name,taunt,picture};
-}
+const playersAreas = (()=>{
+  const displayName1 = document.getElementById("display-name1");
+  const displayName2 = document.getElementById("display-name2");
+
+  pubsub.subscribe("gameStart", display);
+
+  function display(){
+    displayName1.innerText = gameMaster.player1.name;
+    displayName2.innerText = gameMaster.player2.name;
+  }
+})();
 
 // TO DO
-// Create game module.
-// The modules will communicate with each other through the event handler only.
 // Move appropriate functions from board to game.
 // Add carousel to select opponent
 // Add ai players.
