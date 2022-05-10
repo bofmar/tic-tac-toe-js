@@ -39,8 +39,8 @@ button:hover{
 }
 
 img{
-  width: 180px;
-  height: 255px;
+  width: 216px;
+  height: 306px;
 }
 
 .hidden{
@@ -313,8 +313,8 @@ img{
 * * * * * * */
 
 .game-over{
-  width: 400px;
-  height: 580px;
+  width: 520px;
+  height: 754px;
   font-family: Arial, Helvetica, sans-serif;
   border: none;
   border-radius: 25px;
@@ -337,6 +337,8 @@ img{
 
 .game-over .taunt{
   font-size: 1.2rem;
+  max-width: 70%;
+  margin: 30px 0;
 }
 
 .game-over .button-wrapper{
