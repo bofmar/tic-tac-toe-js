@@ -340,6 +340,10 @@ const AIController = (()=>{
       move = chooseEasyMove(boardCopy);
       pubsub.publish("AIMadeAMove", move);
     }
+    if(gameMaster.player2.level === "mid"){
+      move = chooseMidMove(boardCopy);
+      pubsub.publish("AIMadeAMove", move);
+    }
   }
 
   function chooseEasyMove(boardCopy){
@@ -349,12 +353,24 @@ const AIController = (()=>{
       }
     }
   }
+
+  function chooseMidMove(boardCopy){
+    move = getRndInteger(0,8);
+    if(boardCopy[move] === ""){
+      return move;
+    }
+    else{
+      return chooseMidMove(boardCopy);
+    }
+  }
+
+  function getRndInteger(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) ) + min;
+  }
 })();
 
 // TO DO
 // Add ai players.
-// Easy will just pick the first available move.
-// Normal picks at random.
 // Hard uses min-max.
 // Each ai level will have three different representatives with their own name, image and taunts.
 // Add final touches: modify the look of the game, add a favicon, add a title.
