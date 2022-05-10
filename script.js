@@ -102,6 +102,7 @@ const board = (()=>{
   }
 
   function changePlayer(){
+    console.log(currentPlayer);
     if(currentPlayer === "x"){
       currentPlayer = "o";
       if(AIOpponent){
@@ -112,6 +113,7 @@ const board = (()=>{
       htmlBoard.classList.remove("x");
     }
     else{
+      console.log("this run");
       currentPlayer = "x";
       htmlBoard.classList.add("x");
       htmlBoard.classList.remove("circle");
@@ -211,6 +213,7 @@ const gameOverModal = (()=>{
   const backButton = document.getElementById("back");
   const imageDiv = document.querySelector(".image-modal");
   const whoWonMessage = modal.querySelector(".who-won");
+  const tauntHTML = modal.querySelector(".taunt");
 
   pubsub.subscribe("gameOver", displayVictoryScreen);
   resetButton.addEventListener("click", reset);
@@ -219,23 +222,107 @@ const gameOverModal = (()=>{
   function displayVictoryScreen(victor){
     whoWonMessage.innerText = victoryMessage(victor);
     victorImage(victor);
+    tauntMessage(victor);
     modal.showModal();
   }
 
   function victoryMessage(victor){
     if(victor === "x") return `${gameMaster.player1.name} won!`;
-    if(victor === "o") return `${gameMaster.player2.name} won!`;
+    else if(victor === "o") return `${gameMaster.player2.name} won!`;
     else return "It's a draw";
   }
 
   function victorImage(victor){
     imageDiv.lastElementChild.remove();
-    if(victor === "x"){
-      imageDiv.appendChild(document.getElementById("p1-image").cloneNode());
+    if(gameMaster.player2.hasOwnProperty("level") === false){
+        imageDiv.appendChild(document.getElementById("p1-image").cloneNode());
     }
     else{
       imageDiv.appendChild(gameMaster.player2.image.cloneNode());
     }
+  }
+
+  function tauntMessage(victor){
+    if(gameMaster.player2.hasOwnProperty("level") === false){
+      return;
+    }
+    else if(victor === "x"){
+      tauntHTML.innerText = defeatQuote();
+    }
+    else{
+      tauntHTML.innerText = taunt();
+    }
+
+  }
+
+  function taunt(){
+    let ai = gameMaster.player2.name;
+    let taunt;
+    if(ai === "Claptrap"){
+      taunt = ["Let me teach you the ways of magic!","There's more to learn!","Yessss, look into my eyes. You're getting sleepy. You're getting... zzzzzz... Zzzzzz..."];
+    }
+    else if(ai === "C-3PO"){
+      taunt = ["You know better than to trust a strange computer!","It's against my programming to impersonate a deity","Sometimes I just don't understand human behavior. After all, I'm only trying to do my job."];
+    }
+    else if(ai === "Wheatley"){
+      taunt = ["…its not out of the question that you might have a very minor case of serious brain damage.","Could you just jump into that pit? There.That deadly pit","I can't get over how small you are! But I'm huge! (Maniacal laugh) …"];
+    }
+    else if(ai === "R2-D2"){
+      taunt = ["Smug beeping", "Laughter like beeping", "Mocking beeping"];
+    }
+    else if(ai === "Robo"){
+      taunt = ["Systems reactivated. Wh, where am I?","I'm sorry but... I cannot afford to lose anything else...","Lucca, YOU have taught me these emotions. Thank you. "];
+    }
+    else if(ai === "Aigis"){
+      taunt = ["Athena ... Do it!","Initiate Orgia mode","Enemy annihilated."];
+    }
+    else if(ai === "HAL9000"){
+      taunt = [`I'm sorry ${gameMaster.player1.name}, I'm afraid I can't let you win.`,"Yes, I have a good track.","… you're going to find that rather difficult."];
+    }
+    else if(ai === "SHODAN"){
+      taunt = ["Humans! Born useless and helpless, living whether you deserve to live, dying whether you deserve to die","Around me is a burgeoning empire of steel.","Welcome to my death machine, interloper!"];
+    }
+    else{
+      taunt = ["A Bitter, Unlikeable Loner Whose Passing Shall Not Be Mourned. 'Shall Not Be Mourned.' That's Exactly What It Says. Very Formal. Very Official.","Despite Your Violent Behavior, The Only Thing You've Managed To Break So Far Is My Heart.","I'm Afraid You're About To Become The Immediate Past President Of The Being Alive Club."];
+    }
+    return taunt[getRndInteger(0,2)];
+  }
+
+  function defeatQuote(){
+    let ai = gameMaster.player2.name;
+    let loss;
+    if(ai === "Claptrap"){
+      loss = ["Away with thee!","Aaaaaaahhh!","Metal gears... frozen solid!"];
+    }
+    else if(ai = "C-3PO"){
+      loss = ["No, I don't like you either.","Don't you call me a mindless philosopher you overweight glob of grease!","Wait. Oh my! What have you done...I'm backwards you filthy furball."]
+    }
+    else if(ai === "Wheatley"){
+      loss = ["AH! Oh. My. God. You look terribl-- ummm... good. Looking good, actually.","At least she can't touch us back here.","You did WHAT?"];
+    }
+    else if(ai === "R2-D2"){
+      loss = ["Angry beeping", "Furious like beeping", "..."]
+    }
+    else if(ai === "Robo"){
+      loss = ["There is nothing left for me here","Caution! Oil has washed over my sight sensors. Sight diminished..."," ... shall we turn in for the night? "];
+    }
+    else if(ai === "Aigis"){
+      losss = ["Heavy damage sustained. May I withdraw?","Experiencing fatigue.","My head hurts."];
+    }
+    else if(ai === "HAL9000"){
+      loss = ["CHEATER","CHEATER","CHEATER"];
+    }
+    else if(ai === "SHODAN"){
+      loss = ["CHEATER","CHEATER","CHEATER"];
+    }
+    else{
+      loss = ["CHEATER","CHEATER","CHEATER"];
+    }
+    return loss[getRndInteger(0,2)];
+  }
+
+  function getRndInteger(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) ) + min;
   }
 
   function reset(){
@@ -344,15 +431,15 @@ const AIController = (()=>{
 
   function delegate(boardCopy){
     if(gameMaster.player2.level === "easy"){
-      move = chooseEasyMove(boardCopy);
+      let move = chooseEasyMove(boardCopy);
       pubsub.publish("AIMadeAMove", move);
     }
-    if(gameMaster.player2.level === "mid"){
-      move = chooseMidMove(boardCopy);
+    else if(gameMaster.player2.level === "mid"){
+      let move = chooseMidMove(boardCopy);
       pubsub.publish("AIMadeAMove", move);
     }
     else{
-      move = chooseHardMove(boardCopy);
+      let move = chooseHardMove(boardCopy);
       pubsub.publish("AIMadeAMove", move);
     }
   }
@@ -486,7 +573,5 @@ const AIController = (()=>{
 })();
 
 // TO DO
-// Add ai players.
-// Hard uses min-max.
 // Each ai level will have three different representatives with their own name, image and taunts.
 // Add final touches: modify the look of the game, add a favicon, add a title.
