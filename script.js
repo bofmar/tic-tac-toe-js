@@ -43,6 +43,7 @@ AI.prototype.init = function(name,image,level){
 const board = (()=>{
   let boardArray = ["","","","","","","","",""];
   let currentPlayer = "x";
+  let AIOpponent = false;
 
   //DOM selectors
   const htmlBoard = document.querySelector(".board");
@@ -52,6 +53,8 @@ const board = (()=>{
   pubsub.subscribe("gameStart", revealBoard);
   pubsub.subscribe("newRound", resetBoard);
   pubsub.subscribe("gameReset", resetGame);
+  pubsub.subscribe("vsAI", toggleAI);
+  pubsub.subscribe("AIMadeAMove", commitAIMove);
   cells.forEach(cell => cell.addEventListener("click",commitMove));
 
   //Methods
@@ -72,6 +75,7 @@ const board = (()=>{
 
   function resetGame(){
     resetBoard();
+    AIOpponent = false;
     htmlBoard.classList.add("hidden");
   }
 
@@ -90,9 +94,20 @@ const board = (()=>{
     gameOverCheck();
   }
 
+  function commitAIMove(move){
+    cells[move].classList.add("circle");
+    boardArray[move] = "o";
+    console.log(boardArray);
+    gameOverCheck();
+  }
+
   function changePlayer(){
     if(currentPlayer === "x"){
       currentPlayer = "o";
+      if(AIOpponent){
+        pubsub.publish("AITurn",boardArray);
+        return;
+      } // If the second player is an AI, pass control to AIController
       htmlBoard.classList.add("circle");
       htmlBoard.classList.remove("x");
     }
@@ -156,6 +171,10 @@ const board = (()=>{
     else{
       return false;
     }
+  }
+
+  function toggleAI(){
+    AIOpponent = true;
   }
 })();
 
@@ -283,6 +302,7 @@ const gameMaster = ( function() {
       let newAI = new AI;
       newAI.init(name,image,ai);
       Object.assign(player2,newAI);
+      pubsub.publish("vsAI", null);
     }
   }
   return {
@@ -312,8 +332,26 @@ const playersAreas = (()=>{
   }
 })();
 
+const AIController = (()=>{
+  pubsub.subscribe("AITurn", delegate);
+
+  function delegate(boardCopy){
+    if(gameMaster.player2.level === "easy"){
+      move = chooseEasyMove(boardCopy);
+      pubsub.publish("AIMadeAMove", move);
+    }
+  }
+
+  function chooseEasyMove(boardCopy){
+    for(let i = 0; i < boardCopy.length; i++){
+      if(boardCopy[i] === ""){
+        return i;
+      }
+    }
+  }
+})();
+
 // TO DO
-// Make correct image appear in modal
 // Add ai players.
 // Easy will just pick the first available move.
 // Normal picks at random.
