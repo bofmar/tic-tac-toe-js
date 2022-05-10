@@ -304,7 +304,7 @@ const gameOverModal = (()=>{
       loss = ["There is nothing left for me here","Caution! Oil has washed over my sight sensors. Sight diminished..."," ... shall we turn in for the night? "];
     }
     else if(ai === "Aigis"){
-      losss = ["Heavy damage sustained. May I withdraw?","Experiencing fatigue.","My head hurts."];
+      loss = ["Heavy damage sustained. May I withdraw?","Experiencing fatigue.","My head hurts."];
     }
     else if(ai === "HAL9000"){
       loss = ["CHEATER","CHEATER","CHEATER"];
