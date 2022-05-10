@@ -97,12 +97,10 @@ const board = (()=>{
   function commitAIMove(move){
     cells[move].classList.add("circle");
     boardArray[move] = "o";
-    console.log(boardArray);
     gameOverCheck();
   }
 
   function changePlayer(){
-    console.log(currentPlayer);
     if(currentPlayer === "x"){
       currentPlayer = "o";
       if(AIOpponent){
@@ -113,7 +111,6 @@ const board = (()=>{
       htmlBoard.classList.remove("x");
     }
     else{
-      console.log("this run");
       currentPlayer = "x";
       htmlBoard.classList.add("x");
       htmlBoard.classList.remove("circle");
@@ -571,7 +568,3 @@ const AIController = (()=>{
     }
   }
 })();
-
-// TO DO
-// Each ai level will have three different representatives with their own name, image and taunts.
-// Add final touches: modify the look of the game, add a favicon, add a title.
