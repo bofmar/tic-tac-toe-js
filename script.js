@@ -291,7 +291,7 @@ const gameOverModal = (()=>{
     if(ai === "Claptrap"){
       loss = ["Away with thee!","Aaaaaaahhh!","Metal gears... frozen solid!"];
     }
-    else if(ai = "C-3PO"){
+    else if(ai === "C-3PO"){
       loss = ["No, I don't like you either.","Don't you call me a mindless philosopher you overweight glob of grease!","Wait. Oh my! What have you done...I'm backwards you filthy furball."]
     }
     else if(ai === "Wheatley"){
