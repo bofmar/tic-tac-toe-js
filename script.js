@@ -333,6 +333,13 @@ const playersAreas = (()=>{
 })();
 
 const AIController = (()=>{
+  let scores = {
+    "x" : -1,
+    "o" : 1,
+    "draw" : 0
+  }
+
+
   pubsub.subscribe("AITurn", delegate);
 
   function delegate(boardCopy){
@@ -342,6 +349,10 @@ const AIController = (()=>{
     }
     if(gameMaster.player2.level === "mid"){
       move = chooseMidMove(boardCopy);
+      pubsub.publish("AIMadeAMove", move);
+    }
+    else{
+      move = chooseHardMove(boardCopy);
       pubsub.publish("AIMadeAMove", move);
     }
   }
@@ -364,8 +375,113 @@ const AIController = (()=>{
     }
   }
 
+  function chooseHardMove(boardCopy){
+    let bestScore = -Infinity;
+    let bestMove = 0;
+    for(let i = 0; i < boardCopy.length; i++){
+      // Is the spot available
+      if(boardCopy[i] === ""){
+        boardCopy[i] = "o";
+        let score = minimax(boardCopy,false);
+        boardCopy[i] = "";
+        if(score > bestScore){
+          bestScore = score;
+          bestMove = i;
+        }
+      }
+    }
+    return bestMove;
+  }
+
+  function minimax(board,isMaximizing){
+    let result = checkWinner(board,!isMaximizing);
+    if(result !== null){
+      return scores[result];
+    }
+    if(isMaximizing){
+      let bestScore = -Infinity;
+
+      for(let i = 0; i < board.length; i++){
+        if(board[i] === ""){
+          board[i] = "o";
+          let score = minimax(board,false);
+          board[i] = "";
+          bestScore = Math.max(score,bestScore);
+        }
+      }
+      return bestScore;
+    }
+    else{
+      let bestScore = Infinity;
+
+      for(let i = 0; i < board.length; i++){
+        if(board[i] === ""){
+          board[i] = "x";
+          let score = minimax(board,true);
+          board[i] = "";
+          bestScore = Math.min(score,bestScore);
+        }
+      }
+      return bestScore;
+    }
+  }
+
   function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1) ) + min;
+  }
+
+  function checkWinner(board, isAI){
+    let winner = null;
+    if(checkRows(board) || checkColumns(board) || checkDiagonals(board)){
+      if(isAI) winner = "o";
+      else winner = "x";
+    }
+    else if(board.some(element => element === "") === false){
+      winner = "draw";
+    }
+    return winner
+  } // returns null if no winner, draw if it's a tie and the winner's symbol if someone won
+
+  function checkRows(board){
+    for(let i = 0; i < 3; i++){
+      let row = []
+      for(let j = i*3; j < i * 3 + 3; j++){
+        row.push(board[j]);
+      }
+      if (row.every(field => field === 'x') || row.every(field => field === 'o')) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function checkColumns(board){
+    for (let i = 0; i < 3; i++) {
+        let column = []
+        for (let j = 0; j < 3; j++) {
+            column.push(board[i + 3 * j]);
+        }
+
+        if (column.every(field => field == 'x') || column.every(field => field == 'o')) {
+            return true;
+        }
+    }
+    return false;
+  }
+
+  function checkDiagonals(board){
+    const diag1 = [board[0],board[4],board[8]];
+    const diag2 = [board[6],board[4],board[2]];
+
+    if(diag1.every(field => field === "x") || diag1.every(field => field === "o")){
+      return true;
+    }
+    else if(diag2.every(field => field === "x") || diag2.every(field => field === "o")){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 })();
 
